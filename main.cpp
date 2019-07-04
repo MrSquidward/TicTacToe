@@ -41,25 +41,25 @@ class board {
             if (bd[0] == bd[1] && bd[0] == bd[2] && bd[0] != ' ') //pierwszy rzad
                 return true;
 
-            else if (bd[3] == bd[4] && bd[3] == bd[5] && bd[3] != ' ') //drugi rzad
+            if (bd[3] == bd[4] && bd[3] == bd[5] && bd[3] != ' ') //drugi rzad
                 return true;
 
-            else if (bd[6] == bd[7] && bd[6] == bd[8] && bd[6] != ' ') //trzeci rzad
+            if (bd[6] == bd[7] && bd[6] == bd[8] && bd[6] != ' ') //trzeci rzad
                 return true;
 
-            else if (bd[0] == bd[3] && bd[0] == bd[6] && bd[0] != ' ') //pierwsza kolumna
+            if (bd[0] == bd[3] && bd[0] == bd[6] && bd[0] != ' ') //pierwsza kolumna
                 return true;
 
-            else if (bd[1] == bd[4] && bd[1] == bd[7] && bd[1] != ' ') //druga kolumna
+            if (bd[1] == bd[4] && bd[1] == bd[7] && bd[1] != ' ') //druga kolumna
                 return true;
 
-            else if (bd[2] == bd[5] && bd[2] == bd[8] && bd[2] != ' ') //trzecia kolumna
+            if (bd[2] == bd[5] && bd[2] == bd[8] && bd[2] != ' ') //trzecia kolumna
                 return true;
 
-            else if (bd[0] == bd[4] && bd[0] == bd[8] && bd[0] != ' ') //prawy-lewy skos
+            if (bd[0] == bd[4] && bd[0] == bd[8] && bd[0] != ' ') //prawy-lewy skos
                 return true;
 
-            else if (bd[2] == bd[4] && bd[2] == bd[6] && bd[2] != ' ') //lewy-prawy skos
+            if (bd[2] == bd[4] && bd[2] == bd[6] && bd[2] != ' ') //lewy-prawy skos
                 return true;
 
             return false;
@@ -71,16 +71,48 @@ class board {
             }
         }
 
-        int generate_move() {
+        //zwraca indeks talbicy, na ktorym miesjcu
+        //powinno sie znalezc 'O' aby wygrac w tym ruchu
+        int predict_win() {
+            for (int i = 0; i < 9; i++) {
+                if (!is_taken(i)) {
+                    bd[i] = 'O';
+
+                    if (check_win()) {
+                        bd[i] = ' ';
+                        return i;
+                    }
+                    else
+                        bd[i] = ' ';
+                }
+            }
+            //jezeli w tym ruchu nie ma opcji wygranej
+            return -1;
+        }
+
+        //zwraca indeks tablicy, na ktorym miejscu
+        //powinno sie znalezc 'O' aby uniknac porazki
+        int predict_lose() {
+            for (int i = 0; i < 9; i++) {
+                if (!is_taken(i)) {
+                    bd[i] = 'X';
+
+                    if (check_win()) {
+                        bd[i] = ' ';
+                        return i;
+                    }
+                    else
+                        bd[i] = ' ';
+                }
+            }
+            //jezeli w tym ruchu nie ma opcji przegranej
+            return -1;
+        }
+
         //zwraca cyfre 1-9 ktora oznacza w ktorym
         //miejscu ma zostac postawione 'O'
+        int generate_move() {
 
-            /*srand(time(0));
-            int index = rand() % 9;*/
-
-            int index = 0;
-
-            return ++index;
         }
 
         bool is_taken(int idx) {
