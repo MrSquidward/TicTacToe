@@ -2,7 +2,7 @@
 #include <cstdlib> //dla time(int)
 #include <ctime> //dla srand()
 
-using namespace std;
+using namespace std; /that's a baaad idea
 
 class board {
     public:
