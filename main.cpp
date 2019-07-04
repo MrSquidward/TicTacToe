@@ -3,6 +3,7 @@
 #include <ctime> //dla srand()
 
 using namespace std;
+//Lol
 
 class board {
     public:
