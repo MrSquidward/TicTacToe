@@ -1,10 +1,12 @@
 /*
 Program umozliwia zagranie w kolko i krzyzk
 z komputerem. Gracz wykonuje ruch wporwadzajac
-wartosc 1-9 a algorytm generuje ruch dla komputera
+wartosc 1-9 a algorytm generuje losowy ruch dla komputera
 */
 
 #include <iostream>
+#include <cstdlib> //dla time(int)
+#include <ctime> //dla srand()
 
 using namespace std;
 
@@ -76,87 +78,26 @@ class board {
             }
         }
 
-        //funkcja rekurencyjnie sprawdza wszystkie mozliwosci ruchu i
-        //zwraca ewaluacje pozycji dla gracza ruszajacego sie, sprawdzajac
-        //czy dana sekwencja ruchu prowadzi do wygrnej/porazki/remisu
-        //on_mv informuje kto aktualnie wykonuje ruch
-        int evaluate(char on_mv) {
-            //jezeli gra sie skonczyla gracz ktory wczesniej wykonal ruch - wygral
-            if (check_win() && on_mv == player)
-                return 1; //ewaluacja dla wygranej komputera
-
-            if (check_win() && on_mv == cpu)
-                return -1; //ewaluajca dla wygranej gracza
-
-            if (check_draw())
-                return 0; //remis
-
-            if (on_mv == cpu) {
-                int best = -1; //najnizsza mozliwa ewaluacja, gdy ruch ma komputer
-                for (int i = 0; i < 9; i++) {
-                    if (!is_taken(i)) {
-                        bd[i] = cpu;
-                        //jezeli istnieje skwencja ruchow dajaca cpu remis lub wygrana
-                        //evaluate(...) zworci wartosc wieksza niz -1
-                        best = max(best, evaluate(player));
-                        bd[i] = ' ';
-                    }
-                }
-                return best;
-            }
-
-            //gdy na ruchu jest gracz
-            else {
-                int best = 1; //najnizsza mozliwa ewaluacja, gdy ruch ma gracz
-                for (int i = 0; i < 9; i++) {
-                    if (!is_taken(i)) {
-                        bd[i] = player;
-                        //jezeli istnieje sekwencja ruchow dajaca graczowi remis lub wygrana
-                        //evalute(...) zwroci wartosc mniejsza niz 1
-                        best = min(best, evaluate(cpu));
-                        bd[i] = ' ';
-                    }
-                }
-                return best;
-            }
-            return 0;
-        }
-
         //zwraca cyfre 1-9 ktora oznacza w ktorym
         //miejscu ma zostac postawiony token cpu
         int generate_move() {
-            int best = -1; //przechowuje najlepsza dotychczasowa ewaluacje
-            int idx = -1;
+            srand(time(0));
+            int ret = rand();
+            ret = ret % 9;
 
-            for (int i = 0; i < 9; i++) {
-                if (!is_taken(i)) {
-                    bd[i] = cpu;
-                    int value = evaluate(player);
-                    bd[i] = ' ';
-
-                    if (value > best) {
-                        best = value;
-                        idx = i;
-                    }
-                }
+            //jezeli miejsce jest zajete
+            //to zostanie zajete najblizsze pole
+            while (is_taken(ret)) {
+                if (ret < 8)
+                    ret++;
+                else
+                    ret = 0;
             }
-            return idx;
+            return ret;
         }
 
         bool is_taken(int idx) {
             return bd[idx] != ' ';
-        }
-
-        //funkcja sprawdza czy nastapil remis
-        bool check_draw() {
-            if (check_win())
-                return false;
-
-            for (int i = 0; i < 9; i++) {
-                if (!is_taken(i))
-                    return false;
-            }
-            return true;
         }
 
         //funkcja pomoga wyznaczyc miejsca w ktorych
